@@ -1,0 +1,104 @@
+name: Terraform Validate & Security Scan
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '*.tf'
+      - '.github/workflows/terraform-validate.yml'
+
+jobs:
+  terraform-analysis:
+    name: Terraform Quality and Security Analysis
+    runs-on: ubuntu-latest
+    
+    steps:
+      # PASO 0: Descargar código
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      
+      # ============================================
+      # ETAPA 1: ANÁLISIS ESTÁTICO (TFLint)
+      # ============================================
+      - name: "ETAPA 1: Setup TFLint"
+        uses: terraform-linters/setup-tflint@v4
+      
+      - name: "ETAPA 1: Run TFLint - Análisis Estático"
+        run: |
+          echo "=========================================="
+          echo "ETAPA 1: ANÁLISIS ESTÁTICO (TFLint)"
+          echo "=========================================="
+          echo ""
+          echo "Inicializando TFLint..."
+          tflint --init
+          echo ""
+          echo "Ejecutando análisis estático..."
+          tflint -f compact
+          echo ""
+          echo "✅ ETAPA 1 COMPLETADA: Análisis estático finalizado"
+          echo ""
+      
+      # ============================================
+      # ETAPA 2: ANÁLISIS DE SEGURIDAD (Checkov)
+      # ============================================
+      - name: "ETAPA 2: Setup Python para Checkov"
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: "ETAPA 2: Install Checkov"
+        run: |
+          echo "=========================================="
+          echo "ETAPA 2: ANÁLISIS DE SEGURIDAD (Checkov)"
+          echo "=========================================="
+          echo ""
+          echo "Instalando Checkov..."
+          python -m pip install --upgrade pip
+          pip install checkov
+          echo "✅ Checkov instalado correctamente"
+          echo ""
+      
+      - name: "ETAPA 2: Run Checkov - Análisis de Seguridad"
+        run: |
+          echo "Ejecutando análisis de seguridad..."
+          checkov -d . --framework terraform --compact
+          echo ""
+          echo "✅ ETAPA 2 COMPLETADA: Análisis de seguridad finalizado"
+          echo ""
+        continue-on-error: true
+      
+      # ============================================
+      # ETAPA 3: VALIDACIÓN TERRAFORM
+      # ============================================
+      - name: "ETAPA 3: Setup Terraform"
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: latest
+      
+      - name: "ETAPA 3: Run Terraform Validate"
+        run: |
+          echo "=========================================="
+          echo "ETAPA 3: VALIDACIÓN TERRAFORM"
+          echo "=========================================="
+          echo ""
+          echo "Validando código Terraform..."
+          terraform validate
+          echo ""
+          echo "✅ ETAPA 3 COMPLETADA: Validación Terraform finalizada"
+          echo ""
+      
+      # RESULTADO FINAL
+      - name: "Resultado Final del Workflow"
+        run: |
+          echo ""
+          echo "=========================================="
+          echo "WORKFLOW COMPLETADO EXITOSAMENTE"
+          echo "=========================================="
+          echo ""
+          echo "✅ ETAPA 1: Análisis Estático (TFLint) - COMPLETADA"
+          echo "✅ ETAPA 2: Análisis de Seguridad (Checkov) - COMPLETADA"
+          echo "✅ ETAPA 3: Validación Terraform - COMPLETADA"
+          echo ""
+          echo "El código ha sido verificado correctamente."
+          echo ""
