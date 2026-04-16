@@ -1,5 +1,6 @@
 # 002V-grupo-01
 Repositorio correspondiente a Ev Parcial 1 Infra Cloud II
+main
 # AUY1105 - Infraestructura como Código II
 ## Evaluación Parcial 1: Automatización análisis de calidad y seguridad
 
@@ -93,3 +94,6 @@ AUY1105-grupo-002V/
 **Última actualización:** [15/04/2026]
 **Versión:** 1.0.0
 
+=======
+hola mundo
+dev
