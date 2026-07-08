@@ -76,6 +76,9 @@ jobs:
         with:
           terraform_version: latest
       
+      - name: "ETAPA 3: Terraform Init (sin backend)"
+        run: terraform init -backend=false
+
       - name: "ETAPA 3: Run Terraform Validate"
         run: |
           echo "=========================================="
