@@ -25,7 +25,7 @@ resource "aws_security_group" "ssh_access" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] 
+    cidr_blocks = ["10.1.0.0/16"] # politica no_public_ssh: solo red interna
   }
 
   egress {
