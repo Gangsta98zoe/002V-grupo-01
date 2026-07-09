@@ -42,7 +42,7 @@ resource "aws_security_group" "ssh_access" {
 
 resource "aws_instance" "web_server" {
   ami           = "ami-05b10e08d247fb927" 
-  instance_type = "t2.micro"             
+  instance_type = "t2.large"             
   subnet_id     = aws_subnet.subnet_a.id
   vpc_security_group_ids = [aws_security_group.ssh_access.id]
 
